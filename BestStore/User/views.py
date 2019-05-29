@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
+from .forms import ContactQueryForm
 
 
 def user_dashboard(request):
@@ -63,3 +65,44 @@ class DeleteUserProfile(LoginRequiredMixin, DeleteView):
         if current_user.username != self.request.user.username:
             raise Http404("Please respect other's privacy!")
         return current_user
+
+
+def contact_us(request):
+    form = ContactQueryForm()
+    if request.method == 'POST':
+        form = ContactQueryForm(request.POST)
+        if form.is_valid():
+
+            # import pdb;pdb.set_trace()
+            form.save()
+
+            return HttpResponseRedirect('/contact/')
+
+        else:
+            form = ContactQueryForm()
+    return render(request, 'General/contact_us.html', {'form': form})
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        import pdb; pdb.set_trace()
+        user = User.objects.get(username__exact=request.user.username)
+
+        if password1 == password2:
+            if user.check_password(request.POST['old_password']):
+                user.set_password(password1)
+                user.save()
+                return redirect('password_reset_complete')
+            else:
+                # messages.error(request, "The old password you have entered is wrong")
+                return render(request, 'Auth/change_password.html')
+
+        else:
+            # messages.error(request, "Passwords do not match")
+            return render(request, 'Auth/change_password.html')
+
+    else:
+        return render(request, 'Auth/change_password.html')

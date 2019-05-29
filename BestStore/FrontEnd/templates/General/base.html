@@ -145,7 +145,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								</ul>
 							</li>
 
-							<li><a href="short-codes.html">About Us</a></li>
 							<li><a href="mail.html">Contact Us</a></li>
 						</ul>
 					</div>
@@ -195,7 +194,7 @@ $( document ).ready(function() {
 	$('#empty-cart').click(function(evt) {
 		evt.preventDefault()
 
-		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				res = JSON.parse(this.responseText)
@@ -210,7 +209,7 @@ $( document ).ready(function() {
 		};
 
 		xmlhttp.open("GET", "/api/product/cart/empty/");
-		xmlhttp.send();	
+		xmlhttp.send();
 	})
 
 	$("#prod").mouseover(function(){
@@ -227,7 +226,7 @@ $( document ).ready(function() {
 		pk = evt.target.getAttribute('data-pk')
 		price = evt.target.getAttribute('data-price')
 
-		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+		var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				res = JSON.parse(this.responseText)
@@ -240,7 +239,7 @@ $( document ).ready(function() {
 		};
 
 		xmlhttp.open("GET", "/api/product/cart/add/"+pk+"/");
-		xmlhttp.send();	
+		xmlhttp.send();
 	})
 
 	var update_cart_header = function(price, qty) {
@@ -249,7 +248,7 @@ $( document ).ready(function() {
 			current_cart_price = parseInt(current_cart_price) + (qty*price)
 		} else {
 			current_cart_qty = parseInt(current_cart_qty) - qty
-			current_cart_price = parseInt(current_cart_price) - (qty*price)	
+			current_cart_price = parseInt(current_cart_price) - (qty*price)
 		}
 
 		$('#cart-qty').html(current_cart_qty)
