@@ -5,6 +5,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
+from django.contrib import messages
 from .forms import ContactQueryForm
 
 
@@ -88,7 +89,7 @@ def change_password(request):
     if request.method == 'POST':
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         user = User.objects.get(username__exact=request.user.username)
 
         if password1 == password2:
@@ -97,11 +98,12 @@ def change_password(request):
                 user.save()
                 return redirect('password_reset_complete')
             else:
-                # messages.error(request, "The old password you have entered is wrong")
+                messages.error(request, "The old password you have entered is wrong")
+                import pdb; pdb.set_trace()
                 return render(request, 'Auth/change_password.html')
 
         else:
-            # messages.error(request, "Passwords do not match")
+            messages.error(request, "Passwords do not match")
             return render(request, 'Auth/change_password.html')
 
     else:
