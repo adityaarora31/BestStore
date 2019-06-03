@@ -2,6 +2,7 @@
 {% if messages %}
     {% for message in messages %}
         <div id="message" class="container">
+            <center>
             <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
                 <span aria-hidden="true">&times;</span></button>
@@ -15,6 +16,8 @@
                 {{message}}
 
             </div>
+        </center>
         </div>
+
     {% endfor %}
 {% endif %}

@@ -1,9 +1,12 @@
 from .models import Product, Category
-from django.http import JsonResponse, Http404
-from django.shortcuts import render
+from django.http import JsonResponse, Http404, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from collections import OrderedDict
 from BestStore.settings import PRODUCTS_PER_PAGE, PAGINATION_URL
+from django.contrib.auth.models import User
+from .models import Wishlist
 
 
 def home(request):
@@ -128,4 +131,57 @@ class ProductDetailView(DetailView):
         context['image'] = product.productimages_set.all()
         return context
 
+
+@login_required
+def wishlist_items(request):
+    try:
+        user = User.objects.get(email=request.user.email)
+        items = Wishlist.objects.filter(customer=request.user)
+        if not len(items) == 0:
+            context = {'items': items}
+        else:
+            context = {'no_item_found': True}
+    except User.DoesNotExist:
+        return redirect('Auth:loginform')
+    return render(request, 'Products/wishlist.html', context)
+
+
+def add_to_wishlist(request, pk):
+    if request.user.is_authenticated:
+        item = Product.objects.get(id=pk)
+        try:
+            Wishlist.objects.get(item=item)
+            return 'Item Already Exists in your Wishlist'
+        except Wishlist.DoesNotExist:
+            # image = ProductImage.objects.filter(product=product).first()
+            Wishlist.objects.create(customer=request.user, item=item)
+            return 'Item Added To Wishlist successfully'
+    else:
+        return 'Login To Save This to your Wishlist'
+
+
+@login_required
+def add_wishlist_to_cart(request, product_id):
+    cart_add(request, product_id)
+    delete_from_wishlist(request, product_id)
+    return HttpResponse(wishlist_items(request))
+
+@login_required
+def delete_from_wishlist(request, pk):
+    try:
+        user = User.objects.get(email=request.user.email)
+        item = Wishlist.objects.get(product_id=pk)
+        item.delete()
+        items = Wishlist.objects.filter(customer=request.user)
+        context = {'items': items}
+        # import pdb; pdb.set_trace()
+        if not len(items) == 0:
+            if request.method == 'POST':
+                Wishlist.objects.filter(id=pk).delete()
+                context = {'items': items}
+        else:
+            context = {'no_item_found': True}
+        return HttpResponse(wishlist_items(request))
+    except User.DoesNotExist:
+        return redirect('accounts:login_app')
 

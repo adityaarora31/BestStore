@@ -84,4 +84,9 @@ class ProductImages(models.Model):
 #     quantity = models.IntegerField()
 #
 
+class Wishlist(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Product, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ['customer', 'item']

@@ -84,6 +84,13 @@ def contact_us(request):
     return render(request, 'General/contact_us.html', {'form': form})
 
 
+def privacy(request):
+    return render(request, 'General/privacy.html')
+
+
+def tnc(request):
+    return render(request, 'General/tnc.html')
+
 @login_required
 def change_password(request):
     if request.method == 'POST':
@@ -99,7 +106,7 @@ def change_password(request):
                 return redirect('password_reset_complete')
             else:
                 messages.error(request, "The old password you have entered is wrong")
-                import pdb; pdb.set_trace()
+                # import pdb; pdb.set_trace()
                 return render(request, 'Auth/change_password.html')
 
         else:
