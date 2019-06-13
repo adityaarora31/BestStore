@@ -35,12 +35,13 @@ def get_cart_items(request):
   
 def orders(request):
     if request.method == 'POST':
+
         address = json.loads(request.body)['address']
         email = request.user.email
         product = [Product.objects.get(id=int(item)) for item in request.session.get("cart", None) if item is not None]
         order = Order()
         order.buyer = request.user
-        order.address = address
+        order.shipping_address = address
         order.save()
         total_amount = 0
         for products in product:

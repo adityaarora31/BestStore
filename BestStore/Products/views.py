@@ -118,6 +118,7 @@ def product_listings(request):
             'product': filter.get('product'),
             'products': products,
             'search_term': search_term,
+            'filter_tags': filter_tags,
         }
 
     # Render template with context containing pagination details
